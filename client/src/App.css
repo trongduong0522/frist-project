@@ -1,12 +1,15 @@
 @import "tailwindcss";
 
+/* Layout chung */
 .app-shell {
   min-height: 100vh;
 }
 
+/* Sidebar */
 .app-sidebar {
   border-right: 1px solid #eef0f4;
   box-shadow: 4px 0 18px rgba(15, 23, 42, 0.04);
+  z-index: 100;
 }
 
 .app-logo {
@@ -18,47 +21,124 @@
   color: #1677ff;
   font-size: 18px;
   font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
+/* Header & Navigation */
 .app-header {
   height: 64px;
-  padding: 0 10px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: #fff;
   border-bottom: 1px solid #eef0f4;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.app-header-subtitle {
-  display: block;
-  font-size: 13px;
-  line-height: 18px;
-}
-
-.app-header-actions,
-.app-user {
+.app-header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .app-header-icon {
-  font-size: 20px;
+  font-size: 18px;
   cursor: pointer;
+  color: #64748b;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
 }
 
+.app-header-icon:hover {
+  background: #f1f5f9;
+  color: #1677ff;
+}
+
+/* User Profile */
+.app-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 8px;
+  border-left: 1px solid #eef0f4;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #334155;
+  font-size: 14px;
+}
+
+/* Main Content */
 .app-content {
-  padding: 24px;
-  background: #f5f7fb;
-  overflow: auto;
+  padding: 16px;
+  background: #f8fafc; /* Màu nền nhẹ nhàng hơn */
+  min-height: calc(100vh - 64px);
 }
 
 .app-content-inner {
-  width: min(1180px, 100%);
+  width: min(1200px, 100%);
   margin: 0 auto;
 }
 
+/* --- RESPONSIVE ADJUSTMENTS --- */
+
+/* Mobile (Dưới 640px) */
+@media (max-width: 640px) {
+  .app-header {
+    padding: 0 8px;
+  }
+
+  .user-name {
+    display: none; /* Ẩn tên trên điện thoại cho gọn */
+  }
+
+  .app-user {
+    border-left: none;
+  }
+
+  .app-content {
+    padding: 12px;
+  }
+
+  /* Làm cho các nút bấm to hơn một chút để dễ chạm tay */
+  .ant-btn {
+    height: 36px;
+  }
+}
+
+/* Nút toggle sidebar trên Mobile */
+.mobile-toggle {
+  font-size: 18px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tablet trở lên (Từ 768px) */
+@media (min-width: 768px) {
+  .app-header {
+    padding: 0 24px;
+  }
+  
+  .app-content {
+    padding: 24px;
+  }
+}
+
+/* Ant Design Component Overrides */
 .ant-card {
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.ant-layout-sider-trigger {
+  border-top: 1px solid #eef0f4;
 }

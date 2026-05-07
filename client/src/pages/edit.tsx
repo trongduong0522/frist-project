@@ -57,7 +57,7 @@ const EditTodoPage = () => {
         priority: values.priority,
       });
 
-      toast.success('Da cap nhat todo');
+      toast.success('Đã cập nhật todo');
       navigate('/todos');
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -78,8 +78,8 @@ const EditTodoPage = () => {
     return (
       <Result
         status="404"
-        title="Khong tim thay todo"
-        extra={<Button onClick={() => navigate('/todos')}>Quay lai danh sach</Button>}
+        title="Không tìm thấy todo"
+        extra={<Button onClick={() => navigate('/todos')}>Quay lại danh sách</Button>}
       />
     );
   }
@@ -88,55 +88,55 @@ const EditTodoPage = () => {
     <Card
       title={
         <Space direction="vertical" size={0}>
-          <Title level={3}>Sua Todo</Title>
-          <Text type="secondary">Cap nhat thong tin theo schema cua backend.</Text>
+          <Title level={3}>Sửa Todo</Title>
+          <Text type="secondary">Cập nhật thông tin theo schema của backend.</Text>
         </Space>
       }
     >
       <Form<TodoPayload> form={form} layout="vertical" onFinish={(values) => void handleSubmit(values)}>
         <Form.Item
-          label="Tieu de"
+          label="Tiêu đề"
           name="title"
           rules={[
-            { required: true, message: 'Vui long nhap tieu de' },
-            { min: 3, message: 'Tieu de phai co it nhat 3 ky tu' },
-            { max: 100, message: 'Tieu de khong duoc vuot qua 100 ky tu' },
+            { required: true, message: 'Vui lòng nhập tiêu đề' },
+            { min: 3, message: 'Tiêu đề phải có ít nhất 3 ký tự' },
+            { max: 100, message: 'Tiêu đề không được vượt quá 100 ký tự' },
           ]}
         >
-          <Input placeholder="Nhap ten cong viec" maxLength={100} showCount />
+          <Input placeholder="Nhập tên công việc" maxLength={100} showCount />
         </Form.Item>
 
         <Form.Item
-          label="Mo ta"
+          label="Mô tả"
           name="description"
-          rules={[{ max: 500, message: 'Mo ta khong duoc vuot qua 500 ky tu' }]}
+          rules={[{ max: 500, message: 'Mô tả không được vượt quá 500 ký tự' }]}
         >
-          <Input.TextArea rows={5} placeholder="Nhap mo ta neu co" maxLength={500} showCount />
+          <Input.TextArea rows={5} placeholder="Nhập mô tả nếu có" maxLength={500} showCount />
         </Form.Item>
 
         <Form.Item
-          label="Muc do uu tien"
+          label="Mức độ ưu tiên"
           name="priority"
-          rules={[{ required: true, message: 'Vui long chon muc do uu tien' }]}
+          rules={[{ required: true, message: 'Vui lòng chọn mức độ ưu tiên' }]}
         >
           <Select
             options={[
-              { value: 'low', label: 'Thap' },
-              { value: 'medium', label: 'Trung binh' },
+              { value: 'low', label: 'Thấp' },
+              { value: 'medium', label: 'Trung bình' },
               { value: 'high', label: 'Cao' },
             ]}
           />
         </Form.Item>
 
         <Form.Item name="completed" valuePropName="checked">
-          <Checkbox>Da hoan thanh</Checkbox>
+          <Checkbox>Đã hoàn thành</Checkbox>
         </Form.Item>
 
         <Space>
           <Button type="primary" htmlType="submit" loading={submitting}>
-            Cap nhat
+            Cập nhật
           </Button>
-          <Button onClick={() => navigate('/todos')}>Huy</Button>
+          <Button onClick={() => navigate('/todos')}>Hủy</Button>
         </Space>
       </Form>
     </Card>
