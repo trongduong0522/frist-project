@@ -1,0 +1,89 @@
+{
+    "menu": {
+        "dashboard": "Thống kê",
+        "todos": "Quản lý Todo",
+        "account": "Tài khoản",
+        "setting": "Cài đặt"
+    },
+    "header": {
+        "title": "Todo App"
+    },
+    "breadcrumb": {
+        "admin": "Admin",
+        "list": "Danh sách",
+        "add": "Thêm mới",
+        "edit": "Chỉnh sửa"
+    },
+    "list": {
+        "title": "Quản lý Todo",
+        "reload": "Tải lại",
+        "add": "Thêm",
+        "col_task": "Công việc",
+        "col_status": "Trạng thái",
+        "col_priority": "Mức độ ưu tiên",
+        "col_updated": "Cập nhật",
+        "col_done": "Hoàn thành",
+        "col_actions": "Hành động",
+        "status_done": "Hoàn thành",
+        "status_doing": "Đang làm",
+        "priority_low": "Thấp",
+        "priority_medium": "Trung bình",
+        "priority_high": "Cao",
+        "no_description": "Không có mô tả",
+        "empty": "Chưa có công việc nào",
+        "delete_confirm": "Xóa todo này?",
+        "delete_desc": "Dữ liệu đã xóa sẽ không thể khôi phục.",
+        "delete_ok": "Xóa",
+        "delete_cancel": "Hủy",
+        "toast_updated": "Đã cập nhật trạng thái",
+        "toast_deleted": "Đã xóa todo",
+
+        
+        "search_placeholder": "Tìm kiếm công việc...",
+        "filter_status": "Trạng thái",
+        "filter_priority": "Mức độ ưu tiên",
+        "filter_all": "Tất cả",
+        "filter_done": "Hoàn thành",
+        "filter_doing": "Đang làm",
+        "filter_low": "Thấp",
+        "filter_medium": "Trung bình",
+        "filter_high": "Cao",
+        "filter_reset": "Xóa bộ lọc"
+    },
+    "add": {
+        "title": "Thêm Todo",
+        "label_title": "Tiêu đề",
+        "label_desc": "Mô tả",
+        "label_priority": "Mức độ ưu tiên",
+        "placeholder_title": "Nhập tên công việc",
+        "placeholder_desc": "Nhập mô tả nếu có",
+        "checkbox_done": "Đánh dấu đã hoàn thành",
+        "btn_save": "Lưu",
+        "btn_cancel": "Hủy",
+        "rule_required": "Vui lòng nhập tiêu đề",
+        "rule_min": "Tiêu đề phải có ít nhất 3 ký tự",
+        "rule_max_title": "Tiêu đề không được vượt quá 100 ký tự",
+        "rule_max_desc": "Mô tả không được vượt quá 500 ký tự",
+        "rule_priority": "Vui lòng chọn mức độ ưu tiên",
+        "toast_success": "Đã thêm thành công"
+    },
+    "edit": {
+        "title": "Sửa Todo",
+        "label_title": "Tiêu đề",
+        "label_desc": "Mô tả",
+        "label_priority": "Mức độ ưu tiên",
+        "placeholder_title": "Nhập tên công việc",
+        "placeholder_desc": "Nhập mô tả nếu có",
+        "checkbox_done": "Đã hoàn thành",
+        "btn_update": "Cập nhật",
+        "btn_cancel": "Hủy",
+        "rule_required": "Vui lòng nhập tiêu đề",
+        "rule_min": "Tiêu đề phải có ít nhất 3 ký tự",
+        "rule_max_title": "Tiêu đề không được vượt quá 100 ký tự",
+        "rule_max_desc": "Mô tả không được vượt quá 500 ký tự",
+        "rule_priority": "Vui lòng chọn mức độ ưu tiên",
+        "not_found": "Không tìm thấy todo",
+        "back": "Quay lại danh sách",
+        "toast_success": "Đã cập nhật todo"
+    }
+}

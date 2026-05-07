@@ -2,14 +2,16 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, Checkbox, Form, Input, Result, Select, Skeleton, Space, Typography } from 'antd';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { getErrorMessage, todoApi } from '../api/todos';
 import type { TodoPayload } from '../api/todos';
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
 const EditTodoPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [form] = Form.useForm<TodoPayload>();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -17,12 +19,7 @@ const EditTodoPage = () => {
 
   useEffect(() => {
     const fetchTodo = async () => {
-      if (!id) {
-        setNotFound(true);
-        setLoading(false);
-        return;
-      }
-
+      if (!id) { setNotFound(true); setLoading(false); return; }
       try {
         setLoading(true);
         const todo = await todoApi.getOne(id);
@@ -39,15 +36,11 @@ const EditTodoPage = () => {
         setLoading(false);
       }
     };
-
     void fetchTodo();
   }, [form, id]);
 
   const handleSubmit = async (values: TodoPayload) => {
-    if (!id) {
-      return;
-    }
-
+    if (!id) return;
     try {
       setSubmitting(true);
       await todoApi.update(id, {
@@ -56,8 +49,7 @@ const EditTodoPage = () => {
         completed: Boolean(values.completed),
         priority: values.priority,
       });
-
-      toast.success('Đã cập nhật todo');
+      toast.success(t('edit.toast_success'));
       navigate('/todos');
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -66,77 +58,68 @@ const EditTodoPage = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <Card>
-        <Skeleton active paragraph={{ rows: 6 }} />
-      </Card>
-    );
-  }
+  if (loading) return <Card><Skeleton active paragraph={{ rows: 6 }} /></Card>;
 
-  if (notFound) {
-    return (
-      <Result
-        status="404"
-        title="Không tìm thấy todo"
-        extra={<Button onClick={() => navigate('/todos')}>Quay lại danh sách</Button>}
-      />
-    );
-  }
+  if (notFound) return (
+    <Result
+      status="404"
+      title={t('edit.not_found')}
+      extra={<Button onClick={() => navigate('/todos')}>{t('edit.back')}</Button>}
+    />
+  );
 
   return (
     <Card
       title={
         <Space direction="vertical" size={0}>
-          <Title level={3}>Sửa Todo</Title>
-          <Text type="secondary">Cập nhật thông tin theo schema của backend.</Text>
+          <Title level={3}>{t('edit.title')}</Title>
         </Space>
       }
     >
       <Form<TodoPayload> form={form} layout="vertical" onFinish={(values) => void handleSubmit(values)}>
         <Form.Item
-          label="Tiêu đề"
+          label={t('edit.label_title')}
           name="title"
           rules={[
-            { required: true, message: 'Vui lòng nhập tiêu đề' },
-            { min: 3, message: 'Tiêu đề phải có ít nhất 3 ký tự' },
-            { max: 100, message: 'Tiêu đề không được vượt quá 100 ký tự' },
+            { required: true, message: t('edit.rule_required') },
+            { min: 3, message: t('edit.rule_min') },
+            { max: 100, message: t('edit.rule_max_title') },
           ]}
         >
-          <Input placeholder="Nhập tên công việc" maxLength={100} showCount />
+          <Input placeholder={t('edit.placeholder_title')} maxLength={100} showCount />
         </Form.Item>
 
         <Form.Item
-          label="Mô tả"
+          label={t('edit.label_desc')}
           name="description"
-          rules={[{ max: 500, message: 'Mô tả không được vượt quá 500 ký tự' }]}
+          rules={[{ max: 500, message: t('edit.rule_max_desc') }]}
         >
-          <Input.TextArea rows={5} placeholder="Nhập mô tả nếu có" maxLength={500} showCount />
+          <Input.TextArea rows={5} placeholder={t('edit.placeholder_desc')} maxLength={500} showCount />
         </Form.Item>
 
         <Form.Item
-          label="Mức độ ưu tiên"
+          label={t('edit.label_priority')}
           name="priority"
-          rules={[{ required: true, message: 'Vui lòng chọn mức độ ưu tiên' }]}
+          rules={[{ required: true, message: t('edit.rule_priority') }]}
         >
           <Select
             options={[
-              { value: 'low', label: 'Thấp' },
-              { value: 'medium', label: 'Trung bình' },
-              { value: 'high', label: 'Cao' },
+              { value: 'low', label: t('list.priority_low') },
+              { value: 'medium', label: t('list.priority_medium') },
+              { value: 'high', label: t('list.priority_high') },
             ]}
           />
         </Form.Item>
 
         <Form.Item name="completed" valuePropName="checked">
-          <Checkbox>Đã hoàn thành</Checkbox>
+          <Checkbox>{t('edit.checkbox_done')}</Checkbox>
         </Form.Item>
 
         <Space>
           <Button type="primary" htmlType="submit" loading={submitting}>
-            Cập nhật
+            {t('edit.btn_update')}
           </Button>
-          <Button onClick={() => navigate('/todos')}>Hủy</Button>
+          <Button onClick={() => navigate('/todos')}>{t('edit.btn_cancel')}</Button>
         </Space>
       </Form>
     </Card>
