@@ -1,122 +1,93 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useMemo, useState } from 'react';
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Avatar, Badge, Layout, Menu, Typography } from 'antd';
+import {
+  BellOutlined,
+  DashboardOutlined,
+  SettingOutlined,
+  UnorderedListOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { Toaster } from 'react-hot-toast';
+import 'antd/dist/reset.css';
+import './App.css';
+import AddTodoPage from './pages/add';
+import EditTodoPage from './pages/edit';
+import ListTodoPage from './pages/list';
 
-function App() {
-  const [count, setCount] = useState(0)
+const { Header, Sider, Content } = Layout;
+const { Text } = Typography;
+
+const App = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+
+  const selectedKey = useMemo(() => {
+    if (location.pathname.includes('/add')) {
+      return 'add';
+    }
+
+    return 'todos';
+  }, [location.pathname]);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Layout className="app-shell">
+      <Toaster />
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        theme="light"
+        className="app-sidebar"
+      >
+        <div className="app-logo">{collapsed ? 'TD' : 'TODO ADMIN'}</div>
+        <Menu
+          theme="light"
+          selectedKeys={[selectedKey]}
+          mode="inline"
+          items={[
+            {
+              key: 'todos',
+              icon: <UnorderedListOutlined />,
+              label: <Link to="/todos">Quan ly Todo</Link>,
+            },
+            { key: 'dashboard', icon: <DashboardOutlined />, label: 'Thong ke' },
+            { key: 'account', icon: <UserOutlined />, label: 'Tai khoan' },
+            { key: 'setting', icon: <SettingOutlined />, label: 'Cai dat' },
+          ]}
+        />
+      </Sider>
 
-      <div className="ticks"></div>
+      <Layout>
+        <Header className="app-header">
+          <div>
+            <Text strong>Todo-list</Text>
+          </div>
+          <div className="app-header-actions">
+            <Badge >
+              <BellOutlined className="app-header-icon" />
+            </Badge>
+            <div className="app-user">
+              <Avatar icon={<UserOutlined />} />
+              <span>Trong Duong</span>
+            </div>
+          </div>
+        </Header>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        <Content className="app-content">
+          <div className="app-content-inner">
+            <Routes>
+              <Route path="/" element={<Navigate to="/todos" replace />} />
+              <Route path="/todos" element={<ListTodoPage />} />
+              <Route path="/todos/add" element={<AddTodoPage />} />
+              <Route path="/todos/:id/edit" element={<EditTodoPage />} />
+              <Route path="*" element={<Navigate to="/todos" replace />} />
+            </Routes>
+          </div>
+        </Content>
+      </Layout>
+    </Layout>
+  );
+};
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
-
-export default App
+export default App;

@@ -1,5 +1,4 @@
 import Joi from "joi";
-import Todo from "../models/todo.model"; 
 
 const todoSchema = Joi.object({
   title: Joi.string()
@@ -7,21 +6,28 @@ const todoSchema = Joi.object({
     .min(3)
     .max(100)
     .messages({
-      "string.empty": "Tiêu đề không được để trống",
-      "string.min": "Tiêu đề phải có ít nhất 3 ký tự",
-      "any.required": "Trường tiêu đề là bắt buộc"
+      "string.empty": "Tieu de khong duoc de trong",
+      "string.min": "Tieu de phai co it nhat 3 ky tu",
+      "any.required": "Truong tieu de la bat buoc"
     }),
-    
+
   description: Joi.string()
-    .allow("") // Cho phép chuỗi rỗng
+    .allow("")
     .max(500)
     .default("")
     .messages({
-      "string.max": "Mô tả không được vượt quá 500 ký tự"
+      "string.max": "Mo ta khong duoc vuot qua 500 ky tu"
     }),
 
   completed: Joi.boolean()
-    .default(false)
+    .default(false),
+
+  priority: Joi.string()
+    .valid("low", "medium", "high")
+    .default("medium")
+    .messages({
+      "any.only": "Muc do uu tien phai la low, medium hoac high"
+    })
 });
 
 export default todoSchema;
