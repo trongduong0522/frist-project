@@ -1,0 +1,12 @@
+# Hoàn toàn lờ đi node_modules ở bất cứ đâu
+node_modules/
+
+# Lờ đi các file môi trường chứa mật khẩu, key (nếu có)
+.env
+
+# Lờ đi thư mục build của React/Vite
+dist/
+
+# Lờ đi các file rác của hệ thống
+.DS_Store
+Thumbs.db
