@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// --- 1. ĐỊNH NGHĨA TYPES ---
+// --- TYPES ---
 export type TodoPriority = 'low' | 'medium' | 'high';
 
 export type Todo = {
@@ -25,49 +25,55 @@ export type ApiError = {
   error?: string;
 };
 
-// --- 2. CẤU HÌNH AXIOS INSTANCE ---
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001/api';
-
+// --- AXIOS CONFIG ---
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    'https://frist-project-jfh7.onrender.com/api',
 });
 
-// Tự động gắn Token vào Header của mọi yêu cầu gửi đi
+// Auto add token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
-// Xử lý lỗi tập trung
+// Handle error
 export const getErrorMessage = (error: unknown) => {
   if (axios.isAxiosError<ApiError>(error)) {
     const data = error.response?.data;
+
     if (Array.isArray(data?.message)) {
       return data.message.join(', ');
     }
+
     return data?.message ?? data?.error ?? error.message;
   }
+
   return 'Có lỗi xảy ra. Vui lòng thử lại.';
 };
 
 export default api;
 
-// --- 3. API DÀNH CHO AUTH (Đăng nhập/Đăng ký) ---
+// --- AUTH API ---
 export const authApi = {
   login: async (payload: any) => {
     const { data } = await api.post('/auth/login', payload);
-    return data; // Trả về { token, user }
+    return data;
   },
+
   register: async (payload: any) => {
     const { data } = await api.post('/auth/register', payload);
     return data;
   },
 };
 
-// --- 4. API DÀNH CHO TODO (Đã có token bảo vệ) ---
+// --- TODO API ---
 export const todoApi = {
   getAll: async () => {
     const { data } = await api.get<Todo[]>('/todos');
@@ -90,9 +96,11 @@ export const todoApi = {
   },
 
   remove: async (id: string) => {
-    const { data } = await api.delete<{ message: string; deletedTodo: Todo }>(
-      `/todos/${id}`,
-    );
+    const { data } = await api.delete<{
+      message: string;
+      deletedTodo: Todo;
+    }>(`/todos/${id}`);
+
     return data;
   },
 };

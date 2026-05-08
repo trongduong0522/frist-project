@@ -1,33 +1,33 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import dotenv from "dotenv";
 import rootRouter from "./routers/index.router.js";
+
+dotenv.config();
+
 const app = express();
 
-// Kết nối db
-mongoose.connect(`mongodb://localhost:27017/prist-project`);
-// middlewar
+// Connect MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log(err));
+
+// Middleware
 app.use(cors());
 app.use(express.json());
+
+// Test route
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
+
+// API routes
 app.use("/api", rootRouter);
 
-app.get("/api/health", (req, res) => {
-    res.status(200).json({
-        message: "API dang hoat dong",
-        status: "ok"
-    });
-});
-
-
 const port = process.env.PORT || 3001;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
 
-// Route chạy thử để test Postman
-// app.get("/test", (req, res) => {
-//     res.status(200).json({
-//         message: "Kết nối với Postman thành công!",
-//         status: "Server đang hoạt động tốt"
-//     });
-// });
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
