@@ -95,11 +95,11 @@ const App = () => {
       icon: <UnorderedListOutlined />,
       label: <Link to="/todos">{t('menu.todos')}</Link>,
     },
-    {
-      key: 'account',
-      icon: <UserOutlined />,
-      label: <Link to="/account">{t('menu.account')}</Link>,
-    },
+    // {
+    //   key: 'account',
+    //   icon: <UserOutlined />,
+    //   label: <Link to="/account">{t('menu.account')}</Link>,
+    // },
     {
       key: 'setting',
       icon: <SettingOutlined />,
