@@ -31,14 +31,14 @@
         "priority_high": "Cao",
         "no_description": "Không có mô tả",
         "empty": "Chưa có công việc nào",
-        "delete_confirm": "Xóa todo này?",
+        "delete_confirm": " ban chắc chắn muốn xóa công việc này?",
         "delete_desc": "Dữ liệu đã xóa sẽ không thể khôi phục.",
         "delete_ok": "Xóa",
         "delete_cancel": "Hủy",
         "toast_updated": "Đã cập nhật trạng thái",
-        "toast_deleted": "Đã xóa todo",
+        "toast_deleted": "Xóa thành công",
 
-        
+
         "search_placeholder": "Tìm kiếm công việc...",
         "filter_status": "Trạng thái",
         "filter_priority": "Mức độ ưu tiên",

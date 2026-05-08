@@ -1,0 +1,79 @@
+{
+  "baseUrl": "http://localhost:3001/api",
+  "health": {
+    "method": "GET",
+    "url": "http://localhost:3001/api/health"
+  },
+  "register": {
+    "method": "POST",
+    "url": "http://localhost:3001/api/auth/register",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "fullName": "Nguyen Van A",
+      "email": "test@example.com",
+      "password": "123456"
+    }
+  },
+  "login": {
+    "method": "POST",
+    "url": "http://localhost:3001/api/auth/login",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "email": "test@example.com",
+      "password": "123456"
+    }
+  },
+  "createTodo": {
+    "method": "POST",
+    "url": "http://localhost:3001/api/todos",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer PASTE_TOKEN_FROM_LOGIN_HERE"
+    },
+    "body": {
+      "title": "Hoc Express API",
+      "description": "Test tao todo bang Postman hoac Thunder Client",
+      "completed": false,
+      "priority": "medium"
+    }
+  },
+  "getTodos": {
+    "method": "GET",
+    "url": "http://localhost:3001/api/todos",
+    "headers": {
+      "Authorization": "Bearer PASTE_TOKEN_FROM_LOGIN_HERE"
+    }
+  },
+  "getTodoById": {
+    "method": "GET",
+    "url": "http://localhost:3001/api/todos/TODO_ID_HERE",
+    "headers": {
+      "Authorization": "Bearer PASTE_TOKEN_FROM_LOGIN_HERE"
+    }
+  },
+  "updateTodo": {
+    "method": "PUT",
+    "url": "http://localhost:3001/api/todos/TODO_ID_HERE",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer PASTE_TOKEN_FROM_LOGIN_HERE"
+    },
+    "body": {
+      "title": "Hoc Express API da cap nhat",
+      "description": "Test cap nhat todo",
+      "completed": true,
+      "priority": "high"
+    }
+  },
+  "deleteTodo": {
+    "method": "DELETE",
+    "url": "http://localhost:3001/api/todos/TODO_ID_HERE",
+    "headers": {
+      "Authorization": "Bearer PASTE_TOKEN_FROM_LOGIN_HERE"
+    }
+  }
+}

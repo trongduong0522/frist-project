@@ -191,6 +191,7 @@ const ListTodoPage = () => {
 
   return (
     <Card
+      className="page-card todo-list-card"
       title={
         <Space direction="vertical" size={0}>
           <Title level={3}>{t('list.title')}</Title>
@@ -210,8 +211,9 @@ const ListTodoPage = () => {
       }
     >
       {/* ===== FILTER BAR ===== */}
-      <Flex gap={8} wrap="wrap" style={{ marginBottom: 16 }}>
+      <Flex className="todo-filter" gap={8} wrap="wrap" style={{ marginBottom: 16 }}>
         <Input
+          className="todo-filter-control todo-filter-search"
           prefix={<SearchOutlined />}
           placeholder={t('list.search_placeholder')}
           value={search}
@@ -220,6 +222,7 @@ const ListTodoPage = () => {
           style={{ width: 220 }}
         />
         <Select
+          className="todo-filter-control"
           value={filterStatus}
           onChange={(val) => setFilterStatus(val)}
           style={{ width: 150 }}
@@ -230,6 +233,7 @@ const ListTodoPage = () => {
           ]}
         />
         <Select
+          className="todo-filter-control"
           value={filterPriority}
           onChange={(val) => setFilterPriority(val)}
           style={{ width: 150 }}

@@ -33,6 +33,7 @@ const AddTodoPage = () => {
 
   return (
     <Card
+      className="page-card todo-form-card"
       title={
         <Space direction="vertical" size={0}>
           <Title level={3}>{t('add.title')}</Title>
@@ -82,7 +83,7 @@ const AddTodoPage = () => {
           <Checkbox>{t('add.checkbox_done')}</Checkbox>
         </Form.Item>
 
-        <Space>
+        <Space className="form-actions" wrap>
           <Button type="primary" htmlType="submit" loading={submitting}>
             {t('add.btn_save')}
           </Button>

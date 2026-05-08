@@ -1,43 +1,39 @@
-import Todo from "../models/todo.model";
-import Joi from "joi";
-import todoSchema from "../validation/todo.valid";
-export const getAll = async(req,res) =>{
+import Todo from "../models/todo.model.js";
+import todoSchema from "../validation/todo.valid.js";
+
+
+export const getAll = async (req, res) => {
     try {
-        const todos = await Todo.find();
-        return res.json(todos)
+        // Chỉ tìm những Todo có userId trùng với người đang đăng nhập
+        const todos = await Todo.find({ userId: req.user.id }); 
+        return res.json(todos);
     } catch (error) {
-        return res.status(500).json({ error:error.message})
-    }
-}
-
-export const createOne = async (req, res) => {
-    try {
-        // 1. Validate dữ liệu từ client gửi lên (req.body)
-        const { error } = todoSchema.validate(req.body, { abortEarly: false });
-        
-        if (error) {
-            // Trả về danh sách các lỗi nếu có
-            return res.status(400).json({
-                message: error.details.map(err => err.message)
-            });
-        }
-
-        // 2. Nếu dữ liệu hợp lệ, tiến hành lưu vào Database
-        const newTodo = await Todo.create(req.body);
-        
-        // 3. Trả về kết quả thành công
-        return res.status(201).json(newTodo);
-
-    } catch (error) {
-        // Trả về lỗi server nếu có sự cố
         return res.status(500).json({ error: error.message });
     }
 };
 
+export const createOne = async (req, res) => {
+    try {
+        const { error, value } = todoSchema.validate(req.body, { abortEarly: false });
+        if (error) return res.status(400).json({ message: error.details.map(err => err.message) });
+
+        // Gắn thêm userId vào dữ liệu trước khi lưu
+        const newTodo = await Todo.create({ 
+            ...value, 
+            userId: req.user.id 
+        });
+        
+        return res.status(201).json(newTodo);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+
 export const getOne = async (req, res) => {
     try {
         const { id } = req.params;
-        const todo = await Todo.findById(id);
+        const todo = await Todo.findOne({ _id: id, userId: req.user.id });
         
         if (!todo) {
             return res.status(404).json({ message: "Todo không tồn tại" });
@@ -54,7 +50,7 @@ export const updateOne = async (req, res) => {
         const { id } = req.params;
         
         // Validate dữ liệu cập nhật
-        const { error } = todoSchema.validate(req.body, { abortEarly: false });
+        const { error, value } = todoSchema.validate(req.body, { abortEarly: false });
         
         if (error) {
             return res.status(400).json({
@@ -62,9 +58,9 @@ export const updateOne = async (req, res) => {
             });
         }
         
-        const updatedTodo = await Todo.findByIdAndUpdate(
-            id, 
-            req.body, 
+        const updatedTodo = await Todo.findOneAndUpdate(
+            { _id: id, userId: req.user.id },
+            value, 
             { new: true, runValidators: true }
         );
         
@@ -81,7 +77,7 @@ export const updateOne = async (req, res) => {
 export const deleteOne = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedTodo = await Todo.findByIdAndDelete(id);
+        const deletedTodo = await Todo.findOneAndDelete({ _id: id, userId: req.user.id });
         
         if (!deletedTodo) {
             return res.status(404).json({ message: "Todo không tồn tại" });

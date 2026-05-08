@@ -1,13 +1,16 @@
-import { Router } from "express";
-import {
-    getAll, createOne,getOne,deleteOne,updateOne 
-} from "../controllers/todo.controller";
+import express from 'express';
+import { getAll, getOne, createOne, updateOne, deleteOne } from '../controllers/todo.controller.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
-const todoRouter = Router();
-todoRouter.get("/", getAll)
-todoRouter.get("/:id", getOne)
-todoRouter.post("/", createOne)
-todoRouter.delete("/:id", deleteOne)
-todoRouter.put("/:id", updateOne)
+const todoRouter = express.Router();
 
-export default todoRouter
+// Tất cả các hành động với Todo bây giờ đều cần đi qua authMiddleware
+todoRouter.use(authMiddleware);
+
+todoRouter.get('/', getAll);
+todoRouter.get('/:id', getOne);
+todoRouter.post('/', createOne);
+todoRouter.put('/:id', updateOne);
+todoRouter.delete('/:id', deleteOne);
+
+export default todoRouter;

@@ -1,10 +1,11 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { Layout, Menu, Typography, Button, Avatar } from 'antd';
+import type { ReactElement } from 'react';
+import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Layout, Menu, Button, Avatar, Dropdown, message } from 'antd';
 import {
   DashboardOutlined, SettingOutlined, UnorderedListOutlined,
   UserOutlined, MenuUnfoldOutlined, MenuFoldOutlined,
-  SunOutlined, MoonOutlined, BellOutlined,
+  SunOutlined, MoonOutlined, LogoutOutlined,
 } from '@ant-design/icons';
 import { Toaster } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -12,16 +13,37 @@ import { ConfigProvider, theme } from 'antd';
 import 'antd/dist/reset.css';
 import './App.css';
 
+// Import các trang
 import AddTodoPage from './pages/add';
 import EditTodoPage from './pages/edit';
 import ListTodoPage from './pages/list';
+import LoginPage from './pages/login'; 
+import RegisterPage from './pages/register';
+import DashboardPage from './pages/dashboard';
+import AccountPage from './pages/account';
+import SettingsPage from './pages/settings';
 
 const { Header, Sider, Content } = Layout;
+
+// ===== COMPONENT BẢO VỆ ROUTE =====
+const PrivateRoute = ({ children }: { children: ReactElement }) => {
+  const token = localStorage.getItem('token');
+  // Nếu không có token, chuyển hướng về trang login
+  return token ? children : <Navigate to="/login" replace />;
+};
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const isAuthPage = ['/login', '/register'].includes(location.pathname);
+
+  // ===== THÔNG TIN USER =====
+  const user = useMemo(() => {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
+  }, [location.pathname]); // Cập nhật lại khi chuyển trang
 
   // ===== DARK MODE =====
   const [isDark, setIsDark] = useState<boolean>(() => {
@@ -45,10 +67,20 @@ const App = () => {
     localStorage.setItem('language', newLang);
   };
 
+  // ===== LOGOUT =====
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    message.success(t('auth.logout_success') || 'Đã đăng xuất');
+    navigate('/login');
+  };
+
   const selectedKey = useMemo(() => {
     const path = location.pathname;
     if (path.startsWith('/todos')) return 'todos';
     if (path === '/dashboard') return 'dashboard';
+    if (path === '/account') return 'account';
+    if (path === '/setting') return 'setting';
     return 'todos';
   }, [location.pathname]);
 
@@ -76,9 +108,21 @@ const App = () => {
   ];
 
   const getBreadcrumb = () => {
+    if (location.pathname === '/dashboard') return t('menu.dashboard');
+    if (location.pathname === '/account') return t('menu.account');
+    if (location.pathname === '/setting') return t('menu.setting');
     if (location.pathname.includes('add')) return t('breadcrumb.add');
     if (location.pathname.includes('edit')) return t('breadcrumb.edit');
     return t('breadcrumb.list');
+  };
+
+  // Menu cho Avatar Dropdown
+  const userMenu = {
+    items: [
+      { key: 'profile', label: t('menu.account'), icon: <UserOutlined /> },
+      { type: 'divider' as const },
+      { key: 'logout', label: t('auth.logout'), icon: <LogoutOutlined />, onClick: handleLogout, danger: true },
+    ],
   };
 
   return (
@@ -86,85 +130,97 @@ const App = () => {
       <Layout className="app-shell">
         <Toaster position="top-center" />
 
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-          theme={isDark ? 'dark' : 'light'}
-          className="app-sidebar"
-          breakpoint="lg"
-          collapsedWidth="0"
-        >
-          <div className="app-logo">
-            {collapsed ? 'TD' : 'TODO ADMIN'}
-          </div>
-          <Menu
+        {/* Chỉ hiện Sidebar nếu không phải ở trang Login/Register */}
+        {!isAuthPage && (
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={(value) => setCollapsed(value)}
             theme={isDark ? 'dark' : 'light'}
-            selectedKeys={[selectedKey]}
-            mode="inline"
-            items={menuItems}
-          />
-        </Sider>
+            className="app-sidebar"
+            breakpoint="lg"
+            collapsedWidth="0"
+          >
+            <div className="app-logo">
+              {collapsed ? 'TD' : 'TODO ADMIN'}
+            </div>
+            <Menu
+              theme={isDark ? 'dark' : 'light'}
+              selectedKeys={[selectedKey]}
+              mode="inline"
+              items={menuItems}
+            />
+          </Sider>
+        )}
 
         <Layout>
-          <Header className="app-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-                className="mobile-toggle"
-              />
-              <div className="app-header-left">
-                <span className="app-header-title">{t('header.title')}</span>
-                <span className="app-header-breadcrumb">
-                  {t('breadcrumb.admin')} / {getBreadcrumb()}
-                </span>
+          {/* Chỉ hiện Header nếu không phải ở trang Login/Register */}
+          {!isAuthPage && (
+            <Header className="app-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Button
+                  type="text"
+                  icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                  onClick={() => setCollapsed(!collapsed)}
+                  className="mobile-toggle"
+                />
+                <div className="app-header-left">
+                  <span className="app-header-title">{t('header.title')}</span>
+                  <span className="app-header-breadcrumb">
+                    {t('breadcrumb.admin')} / {getBreadcrumb()}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Action buttons */}
-            <div className="app-header-actions">
-              {/* Nút chuyển ngôn ngữ */}
-              <Button
-                className="app-header-icon-btn"
-                onClick={toggleLang}
-                title={lang === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
-                style={{ fontWeight: 600, fontSize: '12px', width: 'auto', padding: '0 10px' }}
-              >
-                {lang === 'vi' ? '🇻🇳 VI' : '🇬🇧 EN'}
-              </Button>
+              <div className="app-header-actions">
+                <Button
+                  className="app-header-icon-btn"
+                  onClick={toggleLang}
+                  style={{ fontWeight: 600, fontSize: '12px', width: 'auto', padding: '0 10px' }}
+                >
+                  {lang === 'vi' ? '🇻🇳 VI' : '🇬🇧 EN'}
+                </Button>
 
-              {/* Nút dark mode */}
-              <Button
-                className="app-header-icon-btn"
-                icon={isDark ? <SunOutlined /> : <MoonOutlined />}
-                onClick={() => setIsDark(!isDark)}
-              />
+                <Button
+                  className="app-header-icon-btn"
+                  icon={isDark ? <SunOutlined /> : <MoonOutlined />}
+                  onClick={() => setIsDark(!isDark)}
+                />
 
-              <Button className="app-header-icon-btn" icon={<BellOutlined />} />
+                <Dropdown menu={userMenu} placement="bottomRight" arrow>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginLeft: '8px' }}>
+                    <Avatar
+                      size={34}
+                      icon={<UserOutlined />}
+                      style={{
+                        background: isDark ? 'transparent' : '#eef0ff',
+                        color: isDark ? '#a855f7' : '#6366f1',
+                        border: isDark ? '1.5px solid #a855f7' : '1.5px solid #818cf8',
+                      }}
+                    />
+                    <span className="user-name-header">{user?.fullName || 'User'}</span>
+                  </div>
+                </Dropdown>
+              </div>
+            </Header>
+          )}
 
-              <Avatar
-                size={34}
-                icon={<UserOutlined />}
-                style={{
-                  background: isDark ? 'transparent' : '#eef0ff',
-                  color: isDark ? '#a855f7' : '#6366f1',
-                  border: isDark ? '1.5px solid #a855f7' : '1.5px solid #818cf8',
-                  cursor: 'pointer',
-                }}
-              />
-            </div>
-          </Header>
-
-          <Content className="app-content">
+          <Content className={isAuthPage ? 'auth-content' : 'app-content'}>
             <div className="app-content-inner">
               <Routes>
-                <Route path="/" element={<Navigate to="/todos" replace />} />
-                <Route path="/todos" element={<ListTodoPage />} />
-                <Route path="/todos/add" element={<AddTodoPage />} />
-                <Route path="/todos/:id/edit" element={<EditTodoPage />} />
-                <Route path="/dashboard" element={<div style={{ padding: 24 }}>Dashboard</div>} />
+                {/* PUBLIC ROUTES */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+
+                {/* PRIVATE ROUTES (Cần đăng nhập) */}
+                <Route path="/" element={<PrivateRoute><Navigate to="/todos" replace /></PrivateRoute>} />
+                <Route path="/todos" element={<PrivateRoute><ListTodoPage /></PrivateRoute>} />
+                <Route path="/todos/add" element={<PrivateRoute><AddTodoPage /></PrivateRoute>} />
+                <Route path="/todos/:id/edit" element={<PrivateRoute><EditTodoPage /></PrivateRoute>} />
+                <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+                <Route path="/account" element={<PrivateRoute><AccountPage /></PrivateRoute>} />
+                <Route path="/setting" element={<PrivateRoute><SettingsPage /></PrivateRoute>} />
+                
                 <Route path="*" element={<Navigate to="/todos" replace />} />
               </Routes>
             </div>

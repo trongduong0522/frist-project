@@ -1,9 +1,13 @@
-import { Router } from "express";
-import todoRouter from "./todo.router"; 
+import express from 'express';
+import todoRouter from './todo.router.js';
+import authRouter from './auth.router.js';
 
-const router = Router();
+const rootRouter = express.Router();
 
-// Sử dụng đúng biến đã import ở trên
-router.use("/todos", todoRouter);
+// Các đường dẫn liên quan đến Đăng nhập/Đăng ký
+rootRouter.use('/auth', authRouter);
 
-export default router;
+// Các đường dẫn liên quan đến Todo
+rootRouter.use('/todos', todoRouter);
+
+export default rootRouter;
