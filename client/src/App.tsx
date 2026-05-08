@@ -119,7 +119,7 @@ const App = () => {
   // Menu cho Avatar Dropdown
   const userMenu = {
     items: [
-      { key: 'profile', label: t('menu.account'), icon: <UserOutlined /> },
+      { key: 'profile', label: t('menu.account'), icon: <UserOutlined />, onClick: () => navigate('/account') },
       { type: 'divider' as const },
       { key: 'logout', label: t('auth.logout'), icon: <LogoutOutlined />, onClick: handleLogout, danger: true },
     ],

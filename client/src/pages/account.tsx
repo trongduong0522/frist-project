@@ -64,7 +64,6 @@ const AccountPage = () => {
 
       <Card className="page-card" title="Bao mat">
         <Space direction="vertical" size={12}>
-          <Text type="secondary">Token dang nhap duoc luu trong localStorage de goi API bao ve.</Text>
           <Button danger icon={<LogoutOutlined />} onClick={handleLogout}>
             Dang xuat
           </Button>
