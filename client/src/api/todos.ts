@@ -71,6 +71,11 @@ export const authApi = {
     const { data } = await api.post('/auth/register', payload);
     return data;
   },
+
+  googleLogin: async (credential: string) => {
+    const { data } = await api.post('/auth/google', { credential });
+    return data;
+  },
 };
 
 // --- TODO API ---

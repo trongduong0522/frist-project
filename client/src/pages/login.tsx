@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Button, Card, Form, Input, Typography, message } from 'antd';
+import { Button, Card, Divider, Form, Input, Typography, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { authApi, getErrorMessage } from '../api/todos';
 
@@ -20,6 +21,28 @@ const LoginPage = () => {
       localStorage.setItem('user', JSON.stringify(res.user));
 
       message.success('Dang nhap thanh cong');
+      navigate('/todos');
+    } catch (error) {
+      message.error(getErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async (credential?: string) => {
+    if (!credential) {
+      message.error('Khong nhan duoc credential tu Google');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await authApi.googleLogin(credential);
+
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('user', JSON.stringify(res.user));
+
+      message.success('Dang nhap Google thanh cong');
       navigate('/todos');
     } catch (error) {
       message.error(getErrorMessage(error));
@@ -74,6 +97,14 @@ const LoginPage = () => {
             <Button type="primary" htmlType="submit" block loading={loading} className="auth-submit">
               Dang nhap
             </Button>
+
+            <Divider plain>hoac</Divider>
+
+            <GoogleLogin
+              onSuccess={(credentialResponse) => handleGoogleLogin(credentialResponse.credential)}
+              onError={() => message.error('Dang nhap Google that bai')}
+              width="100%"
+            />
 
             <div className="auth-switch">
               <Text type="secondary">Chua co tai khoan?</Text>

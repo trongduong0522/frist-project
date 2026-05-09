@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 
+const getJwtSecret = () => process.env.JWT_SECRET || 'YOUR_SECRET_KEY';
+
 export const authMiddleware = (req, res, next) => {
   try {
     // Lấy token từ header "Authorization"
@@ -10,7 +12,7 @@ export const authMiddleware = (req, res, next) => {
     }
 
     // Giải mã token
-    const decoded = jwt.verify(token, 'YOUR_SECRET_KEY');
+    const decoded = jwt.verify(token, getJwtSecret());
     
     // Gắn thông tin user vào request để các hàm sau sử dụng
     req.user = decoded; 
